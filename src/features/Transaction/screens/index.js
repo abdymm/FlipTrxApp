@@ -37,6 +37,13 @@ const Transaction = props => {
   const [showOrderByModal, setShowOrderByModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState(null);
   const [orderItem, setOrderItem] = useState(OrderBy.URUTKAN);
+  const toggleModal = () => {
+    setShowOrderByModal(!showOrderByModal);
+  };
+
+  // since right now there is no specifiq api requiremdnet for sort and filter
+  // i implement it on local data, if there is sepsification need to call to api
+  // i will create new effect in rematch to filter and sort the data
   const onSearch = query => {
     query = query.toLowerCase();
     setSearchQuery(query);
@@ -51,10 +58,7 @@ const Transaction = props => {
       ),
     );
   };
-  const toggleModal = () => {
-    setShowOrderByModal(!showOrderByModal);
-  };
-  const onShort = item => {
+  const onSort = item => {
     let sortBy = '';
     let sortType = '';
     switch (item) {
@@ -95,7 +99,7 @@ const Transaction = props => {
         <CardOrderBy
           defaultItem={orderItem}
           onChooseOrder={item => {
-            onShort(item);
+            onSort(item);
           }}
         />
       </Modal>
@@ -119,6 +123,9 @@ const Transaction = props => {
           </Button>
         </View>
       </View>
+      {/* Show loading indicator onlyfirstload and still fetching api */}
+      {/* When user try to refetch it (eg. pull to refresh) this will not show anymore */}
+      {/* since we already have loading indicator on pull to refresh, and also to keep the list of item */}
       {isFetching && isFirstLoad ? (
         <ActivityIndicator />
       ) : (
